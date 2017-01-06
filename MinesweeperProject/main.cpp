@@ -1,13 +1,65 @@
 #include <iostream>
 #include <ctime>
-#include "MinesweeperMap.h"
 #include <stdlib.h>
+#include <cstring>
+#include "MinesweeperMap.h"
+#include "GameStats.h"
 using namespace std;
 
 bool ok=true;
 int numberOfRevealedCells=0,necessaryRevealedCells,numberOfFlags;
 char option,playAgain;
 bool keepPlaying=true;
+clock_t t1,t2;
+
+int countNeighbouringMines(MinesweeperMap &m,int i,int j)
+{
+    int x,y,nr=0;
+    x=m.xDimension-1;
+    y=m.yDimension-1;
+
+    if(i>=1)
+    {
+        if(j>=1) nr+=m.grid[i-1][j-1].containsMine;
+        if(j<=y-1) nr+=m.grid[i-1][j+1].containsMine;
+        nr+=m.grid[i-1][j].containsMine;
+    }
+    if(j>=1)nr+=m.grid[i][j-1].containsMine;
+    if(j<=y-1) nr+=m.grid[i][j+1].containsMine;
+    if(i<=y-1)
+    {
+        if(j>=1)nr+=m.grid[i+1][j-1].containsMine;
+        if(j<=y-1) nr+=m.grid[i+1][j+1].containsMine;
+        nr+=m.grid[i+1][j].containsMine;
+
+    }
+   return nr;
+}
+
+
+int countNeighbouringFlags(MinesweeperMap &m,int i,int j)
+{
+    int x,y,nr=0;
+    x=m.xDimension-1;
+    y=m.yDimension-1;
+
+    if(i>=1)
+    {
+        if(j>=1) nr+=m.grid[i-1][j-1].containsFlag;
+        if(j<=y-1) nr+=m.grid[i-1][j+1].containsFlag;
+        nr+=m.grid[i-1][j].containsFlag;
+    }
+    if(j>=1)nr+=m.grid[i][j-1].containsFlag;
+    if(j<=y-1) nr+=m.grid[i][j+1].containsFlag;
+    if(i<=y-1)
+    {
+        if(j>=1)nr+=m.grid[i+1][j-1].containsFlag;
+        if(j<=y-1) nr+=m.grid[i+1][j+1].containsFlag;
+        nr+=m.grid[i+1][j].containsFlag;
+
+    }
+   return nr;
+}
 
 void reveal(MinesweeperMap m1)
 {
@@ -105,10 +157,10 @@ void initializeGame(MinesweeperMap &m)
     while(mines>=lines*columns||mines<=0);
     cout<<endl;
     initializeMinesweeperMap(m,lines,columns,mines);
-    placingMines(m);
+    numberOfFlags=m.nrOfMines;
+    placeMines(m);
     countAdjacentMines1(m);
     reveal(m);
-    numberOfFlags=mines;
     necessaryRevealedCells=lines*columns-mines;
     ok=true;
     numberOfRevealedCells=0;
@@ -149,12 +201,13 @@ void playingUsingKeyboard(MinesweeperMap &m)
             }
 
         }
+
     }
-    else if(action=='a')
+    else
     {
         if(m.grid[line][column].canBeRevealed==true)
         {
-            nr=countAdjacentFlags(m,line,column);
+            nr=countNeighbouringFlags(m,line,column);
             if(nr==m.grid[line][column].nrOfAdjacentMines)
             {
 
@@ -173,15 +226,27 @@ void playingUsingKeyboard(MinesweeperMap &m)
             }
 
         }
+
     }
-    else
-        cout<<"INVALID MOVE";
-    system("CLS");
+
+     system("CLS");
     reveal(m);
 
 
 }
 
+void menu()
+{
+    option='b';
+    cout<<"If you want to play,press k; "<<endl<<"If you want to see your stats press s"<<endl;
+    do
+    {
+        cin>>option;
+    }
+    while(option!='k'&&option!='s');
+
+
+}
 
 void playAgainQuestion()
 {
@@ -199,53 +264,81 @@ void playAgainQuestion()
     }
     while(playAgain!='y'&&playAgain!='n');
 
-}
 
+
+}
 
 int main()
 {
     int line,column;
-    char action,play;
+    char player[50];
     MinesweeperMap gameMap;
-
     double seconds;
+    Records r[100];
+    int numberOfRecords=0;
     do
     {
+mainMenu:
+        menu();
+        switch(option)
+        {
+        case 's':
+            showRecords(r,numberOfRecords);
+            cout<<endl;
+            cout<<"Press s to return to main menu"<<endl;
+            do
+            {
+                cin>>option;
+            }
+            while(option!='s');
+            system("CLS");
+            goto mainMenu;
+            break;
 
+
+        case 'k':
             initializeGame(gameMap);
             system("CLS");
             reveal(gameMap);
+            t1=clock();
             do
             {
                 playingUsingKeyboard(gameMap);
 
                 if(ok==false||(numberOfRevealedCells==necessaryRevealedCells&&numberOfFlags==0))
                 {
-
-
+                    t2=clock();
+                    seconds=(t2-t1)/(double)CLOCKS_PER_SEC;
+                    cout<<endl;
+                    cout<<"Type your name"<<endl;
+                    cin>>player;
+                    cout<<endl;
                     if(numberOfRevealedCells==necessaryRevealedCells&&numberOfFlags==0)
 
-
+                    {
                         cout<<endl<<"you won";
-
-
+                        setRecord(r[numberOfRecords],player,"won",seconds,gameMap.yDimension,gameMap.xDimension);
+                    }
                     else
-
+                    {
                         cout<<endl<<"you lost";
-
+                        setRecord(r[numberOfRecords],player,"lost",seconds,gameMap.yDimension,gameMap.xDimension);
+                    }
+                    numberOfRecords++;
                     keepPlaying=false;
                     playAgainQuestion();
                 }
 
             }
             while(ok==true&&(numberOfRevealedCells<necessaryRevealedCells||numberOfFlags!=0));
+            break;
+
         }
-
+    }
     while(keepPlaying==true);
-
+    showRecords(r,numberOfRecords);
     return 0;
 }
-
 
 
 

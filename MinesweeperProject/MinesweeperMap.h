@@ -12,7 +12,7 @@ void initializeMinesweeperMapCell(MinesweeperMapCell &a);
 void initializeMinesweeperMap(MinesweeperMap &m1,int y,int x,int b);
 int countAdjacentMines(MinesweeperMap m,int i,int j);
 int countAdjacentFlags(MinesweeperMap m,int i,int j);
-void placingMines(MinesweeperMap &m1);
+void placeMines(MinesweeperMap &m1);
 void countAdjacentMines1(MinesweeperMap &m1);
 
 

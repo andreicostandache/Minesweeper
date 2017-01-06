@@ -1,14 +1,23 @@
 # depslib dependency file v1.0
-1483719163 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\main.cpp
+1483731997 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\main.cpp
 	<iostream>
 	<ctime>
-	"MinesweeperMap.h"
 	<stdlib.h>
+	<cstring>
+	"MinesweeperMap.h"
+	"GameStats.h"
 
-1483709276 c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\minesweepermap.h
+1483732048 c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\minesweepermap.h
 
-1483709302 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\minesweepermap.cpp
+1483732049 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\minesweepermap.cpp
 	"MinesweeperMap.h"
 	<iostream>
 	<stdlib.h>
+
+1483731958 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\gamestats.cpp
+	"GameStats.h"
+	<cstring>
+	<iostream>
+
+1483731971 c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\gamestats.h
 

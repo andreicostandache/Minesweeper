@@ -32,6 +32,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="GameStats.cpp" />
+		<Unit filename="GameStats.h" />
 		<Unit filename="MinesweeperMap.cpp" />
 		<Unit filename="MinesweeperMap.h" />
 		<Unit filename="main.cpp" />

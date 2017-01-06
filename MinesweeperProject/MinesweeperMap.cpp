@@ -72,7 +72,7 @@ int countAdjacentFlags(MinesweeperMap m,int i,int j)
     }
    return nr;
 }
-void placingMines(MinesweeperMap &m1)
+void placeMines(MinesweeperMap &m1)
 {
     int i,a,b;
     i=0;
