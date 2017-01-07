@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1483802897 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\main.cpp
+1483815190 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\main.cpp
 	<iostream>
 	<ctime>
 	<stdlib.h>
@@ -16,12 +16,12 @@
 	<iostream>
 	<stdlib.h>
 
-1483731958 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\gamestats.cpp
+1483815269 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\gamestats.cpp
 	"GameStats.h"
 	<cstring>
 	<iostream>
 
-1483731971 c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\gamestats.h
+1483815268 c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\gamestats.h
 
 1483801396 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\windowsandsurfaces.cpp
 	"WindowsAndSurfaces.h"
