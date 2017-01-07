@@ -4,6 +4,8 @@
 #include <cstring>
 #include "MinesweeperMap.h"
 #include "GameStats.h"
+#include "WindowsAndSurfaces.h"
+#include <SDL.h>
 using namespace std;
 
 bool ok=true;
@@ -11,6 +13,7 @@ int numberOfRevealedCells=0,necessaryRevealedCells,numberOfFlags;
 char option,playAgain;
 bool keepPlaying=true;
 clock_t t1,t2;
+SDL_Surface *zero = NULL,*one = NULL,*two = NULL,*three = NULL,*four = NULL,*five = NULL,*six = NULL,*seven = NULL,*eight = NULL,*mine = NULL,*flag = NULL,*box = NULL;
 
 int countNeighbouringMines(MinesweeperMap &m,int i,int j)
 {
@@ -33,7 +36,7 @@ int countNeighbouringMines(MinesweeperMap &m,int i,int j)
         nr+=m.grid[i+1][j].containsMine;
 
     }
-   return nr;
+    return nr;
 }
 
 
@@ -58,7 +61,7 @@ int countNeighbouringFlags(MinesweeperMap &m,int i,int j)
         nr+=m.grid[i+1][j].containsFlag;
 
     }
-   return nr;
+    return nr;
 }
 
 void reveal(MinesweeperMap m1)
@@ -130,6 +133,22 @@ void open(MinesweeperMap &m,int i,int j)
     }
 
 
+}
+
+void initSurfaces()
+{
+    zero = SDL_LoadBMP("images/digit0.bmp" );
+    one = SDL_LoadBMP( "images/digit1.bmp" );
+    two = SDL_LoadBMP( "images/digit2.bmp" );
+    three = SDL_LoadBMP( "images/digit3.bmp" );
+    four = SDL_LoadBMP( "images/digit4.bmp" );
+    five = SDL_LoadBMP( "images/digit5.bmp" );
+    six = SDL_LoadBMP( "images/digit6.bmp" );
+    seven = SDL_LoadBMP( "images/digit7.bmp" );
+    eight = SDL_LoadBMP( "images/digit8.bmp" );
+    box=SDL_LoadBMP( "images/box.bmp" );
+    flag = SDL_LoadBMP( "images/flag.bmp" );
+    mine=SDL_LoadBMP( "images/mine.bmp");
 }
 
 void initializeGame(MinesweeperMap &m)
@@ -229,7 +248,7 @@ void playingUsingKeyboard(MinesweeperMap &m)
 
     }
 
-     system("CLS");
+    system("CLS");
     reveal(m);
 
 
@@ -268,7 +287,7 @@ void playAgainQuestion()
 
 }
 
-int main()
+int main(int argc, char* args[])
 {
     int line,column;
     char player[50];
@@ -276,6 +295,7 @@ int main()
     double seconds;
     Records r[100];
     int numberOfRecords=0;
+
     do
     {
 mainMenu:

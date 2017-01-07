@@ -36,6 +36,8 @@
 		<Unit filename="GameStats.h" />
 		<Unit filename="MinesweeperMap.cpp" />
 		<Unit filename="MinesweeperMap.h" />
+		<Unit filename="WindowsAndSurfaces.cpp" />
+		<Unit filename="WindowsAndSurfaces.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

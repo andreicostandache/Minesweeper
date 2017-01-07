@@ -1,11 +1,13 @@
 # depslib dependency file v1.0
-1483731997 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\main.cpp
+1483802897 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\main.cpp
 	<iostream>
 	<ctime>
 	<stdlib.h>
 	<cstring>
 	"MinesweeperMap.h"
 	"GameStats.h"
+	"WindowsAndSurfaces.h"
+	<SDL.h>
 
 1483732048 c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\minesweepermap.h
 
@@ -20,4 +22,11 @@
 	<iostream>
 
 1483731971 c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\gamestats.h
+
+1483801396 source:c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\windowsandsurfaces.cpp
+	"WindowsAndSurfaces.h"
+	<SDL.h>
+
+1483801411 c:\users\andrew\desktop\minesweeper\minesweeper\minesweeperproject\windowsandsurfaces.h
+	<SDL.h>
 
