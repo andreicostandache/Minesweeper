@@ -1,18 +1,20 @@
 struct MinesweeperMapCell
 {
+    unsigned int nrOfAdjacentMines;
     bool containsMine,containsFlag,canBeRevealed;
-    int nrOfAdjacentMines;
+
 };
 struct MinesweeperMap
 {
     MinesweeperMapCell grid [100][100];
-    int xDimension,yDimension,nrOfMines;
+    unsigned int xDimension,yDimension,nrOfMines;
 };
 void initializeMinesweeperMapCell(MinesweeperMapCell &a);
-void initializeMinesweeperMap(MinesweeperMap &m1,int y,int x,int b);
-int countAdjacentMines(MinesweeperMap m,int i,int j);
-int countAdjacentFlags(MinesweeperMap m,int i,int j);
+void initializeMinesweeperMap(MinesweeperMap &m1,unsigned int y,unsigned int x,unsigned int b);
+unsigned int countAdjacentMines(MinesweeperMap m,unsigned int i,unsigned int j);
+unsigned int countAdjacentFlags(MinesweeperMap m,unsigned int i,unsigned int j);
 void placeMines(MinesweeperMap &m1);
 void countAdjacentMines1(MinesweeperMap &m1);
+
 
 

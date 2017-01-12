@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-void setRecord(Records &r,char name[50],char res[10],double s,int l,int c,int m)
+void setRecord(Records &r,char name[50],char res[10],double s,unsigned int l,unsigned int c,unsigned int m)
  {
      strcpy(r.player,name);
      strcpy(r.result,res);
@@ -15,7 +15,7 @@ void setRecord(Records &r,char name[50],char res[10],double s,int l,int c,int m)
 
 void showRecords(Records r[],int n)
 {
-    int i;
+   unsigned int i;
     if(n>=1)
         for(i=0; i<=n-1; i++,cout<<endl)
             cout<<i+1<<" "<<'('<<r[i].result<<" game"<<')'<<"player: "<<r[i].player<<" "<<"The map had "<<r[i].lines<<" lines, "<<r[i].columns<<" columns, "<<r[i].nrOfMines<<" mines, and the game lasted "<<r[i].seconds<<" seconds"<<endl;

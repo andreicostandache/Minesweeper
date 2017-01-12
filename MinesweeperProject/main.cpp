@@ -9,64 +9,16 @@
 using namespace std;
 
 bool ok=true;
-int numberOfRevealedCells=0,necessaryRevealedCells,numberOfFlags;
+unsigned int numberOfRevealedCells=0,necessaryRevealedCells,numberOfFlags;
 char option,playAgain;
 bool keepPlaying=true;
 clock_t t1,t2;
 SDL_Surface *zero = NULL,*one = NULL,*two = NULL,*three = NULL,*four = NULL,*five = NULL,*six = NULL,*seven = NULL,*eight = NULL,*mine = NULL,*flag = NULL,*box = NULL;
 SDL_Point mousePosition;
-int countNeighbouringMines(MinesweeperMap &m,int i,int j)
-{
-    int x,y,nr=0;
-    x=m.xDimension-1;
-    y=m.yDimension-1;
-
-    if(i>=1)
-    {
-        if(j>=1) nr+=m.grid[i-1][j-1].containsMine;
-        if(j<=y-1) nr+=m.grid[i-1][j+1].containsMine;
-        nr+=m.grid[i-1][j].containsMine;
-    }
-    if(j>=1)nr+=m.grid[i][j-1].containsMine;
-    if(j<=y-1) nr+=m.grid[i][j+1].containsMine;
-    if(i<=y-1)
-    {
-        if(j>=1)nr+=m.grid[i+1][j-1].containsMine;
-        if(j<=y-1) nr+=m.grid[i+1][j+1].containsMine;
-        nr+=m.grid[i+1][j].containsMine;
-
-    }
-    return nr;
-}
-
-
-int countNeighbouringFlags(MinesweeperMap &m,int i,int j)
-{
-    int x,y,nr=0;
-    x=m.xDimension-1;
-    y=m.yDimension-1;
-
-    if(i>=1)
-    {
-        if(j>=1) nr+=m.grid[i-1][j-1].containsFlag;
-        if(j<=y-1) nr+=m.grid[i-1][j+1].containsFlag;
-        nr+=m.grid[i-1][j].containsFlag;
-    }
-    if(j>=1)nr+=m.grid[i][j-1].containsFlag;
-    if(j<=y-1) nr+=m.grid[i][j+1].containsFlag;
-    if(i<=y-1)
-    {
-        if(j>=1)nr+=m.grid[i+1][j-1].containsFlag;
-        if(j<=y-1) nr+=m.grid[i+1][j+1].containsFlag;
-        nr+=m.grid[i+1][j].containsFlag;
-
-    }
-    return nr;
-}
 
 void reveal(MinesweeperMap m1)
 {
-    int i,j;
+    unsigned int i,j;
     cout<<"Number of flags available:"<<numberOfFlags<<endl;
     cout<<"   ";
     for(j=0; j<=m1.xDimension-1; j++)
@@ -107,7 +59,7 @@ void reveal(MinesweeperMap m1)
 
 }
 
-void open(MinesweeperMap &m,int i,int j)
+void open(MinesweeperMap &m,unsigned int i,unsigned int j)
 {
     if(i>=0&&i<=m.yDimension-1&&j>=0&&j<=m.xDimension-1&&m.grid[i][j].canBeRevealed==false&&m.grid[i][j].containsFlag==false)
     {
@@ -152,7 +104,7 @@ void initSurfaces()
 
 void draw(MinesweeperMap m,SDL_Window* &w,SDL_Surface* &s)
 {
-    int i,j,lines,columns;
+    unsigned int i,j,lines,columns;
     lines=m.yDimension;
     columns=m.xDimension;
     for(i=0; i<=lines-1; i++,cout<<endl)
@@ -215,7 +167,7 @@ void draw(MinesweeperMap m,SDL_Window* &w,SDL_Surface* &s)
 }
 void initializeGame(MinesweeperMap &m)
 {
-    int lines,mines,columns;
+    unsigned int lines,mines,columns;
     cout<<"Type the number of lines you want: ";
     do
     {
@@ -253,7 +205,7 @@ void playingUsingKeyboard(MinesweeperMap &m)
 {
 
     char action;
-    int line,column,nr;
+    unsigned int line,column,nr;
     cout<<"Type the line,the column and the action you want; o-open the cell at (line,column);f-mark the cell at (line,column)with a flag;a-special opening"<<endl;
     do
     {
@@ -288,7 +240,7 @@ void playingUsingKeyboard(MinesweeperMap &m)
     {
         if(m.grid[line][column].canBeRevealed==true)
         {
-            nr=countNeighbouringFlags(m,line,column);
+            nr=countAdjacentFlags(m,line,column);
             if(nr==m.grid[line][column].nrOfAdjacentMines)
             {
 
@@ -321,7 +273,7 @@ void playingUsingKeyboard(MinesweeperMap &m)
 void playingUsingMouse(MinesweeperMap &m,SDL_Window* &w,SDL_Surface* &s)
 {
 
-    int line,column,nr;
+    unsigned int line,column,nr;
     SDL_Event e;
     while(SDL_PollEvent(&e)!=0)
     {
@@ -423,12 +375,12 @@ void playAgainQuestion()
 
 int main(int argc, char* args[])
 {
-    int line,column;
+    unsigned int line,column;
     char player[50];
     MinesweeperMap gameMap;
     double seconds;
     Records r[100];
-    int numberOfRecords=0;
+    unsigned int numberOfRecords=0;
     SDL_Window *gameWindow;
     SDL_Surface *screen;
     initSurfaces();
