@@ -5,16 +5,15 @@
 #include "MinesweeperMap.h"
 #include "GameStats.h"
 #include "WindowsAndSurfaces.h"
+#define SDL_MAIN_HANDLED
 #include <SDL.h>
 using namespace std;
 
 bool ok=true;
 unsigned int numberOfRevealedCells=0,necessaryRevealedCells,numberOfFlags;
 char option,playAgain;
-bool keepPlaying=true;
-clock_t t1,t2;
+bool keepPlaying=true,firstMove=true;
 SDL_Surface *zero = NULL,*one = NULL,*two = NULL,*three = NULL,*four = NULL,*five = NULL,*six = NULL,*seven = NULL,*eight = NULL,*mine = NULL,*flag = NULL,*box = NULL;
-SDL_Point mousePosition;
 
 void reveal(MinesweeperMap m1)
 {
@@ -23,7 +22,7 @@ void reveal(MinesweeperMap m1)
     cout<<"   ";
     for(j=0; j<=m1.xDimension-1; j++)
     {
-        cout<<j;
+        cout<<"  "<<j<<"";
         if(j<10)
             cout<<" ";
     }
@@ -35,25 +34,25 @@ void reveal(MinesweeperMap m1)
             cout<<" ";
         for(j=0; j<=m1.xDimension-1; j++)
         {
-            cout<<'|';
+            cout<<"|";
             if(m1.grid[i][j].canBeRevealed==true)
             {
                 if(m1.grid[i][j].containsMine==true)
-                    cout<<'M';
+                    cout<<" M ";
                 else
                 {
                     if(m1.grid[i][j].nrOfAdjacentMines==0)
-                        cout<<" ";
+                        cout<<"   ";
                     else
-                        cout<<m1.grid[i][j].nrOfAdjacentMines;
+                        cout<<" "<<m1.grid[i][j].nrOfAdjacentMines<<" ";
                 }
             }
             else if(m1.grid[i][j].containsFlag==true)
-                cout<<'F';
+                cout<<" F ";
             else
-                cout<<"*";
+                cout<<" * ";
         }
-        cout<<'|';
+        cout<<"|";
     }
 
 
@@ -65,7 +64,30 @@ void open(MinesweeperMap &m,unsigned int i,unsigned int j)
     {
         m.grid[i][j].canBeRevealed=true;
         if(m.grid[i][j].containsMine==true)
-            ok=false;
+        {
+            if(firstMove==true)
+            {
+                unsigned int a,b;
+                bool changedMinePlace=false;
+                srand(time(NULL));
+                while(changedMinePlace==false)
+                {
+                    a=rand()%m.yDimension;
+                    b=rand()%m.xDimension;
+                    if(m.grid[a][b].containsMine==false&&(a!=i||b!=j))
+                    {
+                        m.grid[a][b].containsMine=true;
+                        changedMinePlace=true;
+                        m.grid[i][j].containsMine=false;
+                        countAdjacentMines1(m);
+                    }
+                }
+                numberOfRevealedCells++;
+            }
+            else
+                ok=false;
+
+        }
         else
         {
             numberOfRevealedCells++;
@@ -81,7 +103,7 @@ void open(MinesweeperMap &m,unsigned int i,unsigned int j)
                 open(m,i-1,j-1);
             }
         }
-
+        firstMove=false;
     }
 
 
@@ -165,39 +187,66 @@ void draw(MinesweeperMap m,SDL_Window* &w,SDL_Surface* &s)
     SDL_UpdateWindowSurface(w);
 
 }
-void initializeGame(MinesweeperMap &m)
+void initializeGame(MinesweeperMap &m,char wayOfPlaying)
 {
-    unsigned int lines,mines,columns;
-    cout<<"Type the number of lines you want: ";
-    do
+    int lines,mines,columns;
+    if(wayOfPlaying=='m')
     {
-        cin>>lines;
+        cout<<"Type the number of lines you want(minimum 3,maximum 15): ";
+        do
+        {
+            cin>>lines;
+        }
+        while(lines<=2||lines>=16);
+        cout<<endl;
+        cout<<"Type the number of columns you want(minimum 3,maximum 30):  ";
+        do
+        {
+            cin>>columns;
+        }
+        while(columns<=2||columns>=31);
+        cout<<endl;
+        cout<<"Type the number of mines you want;it must be   >2  and  <(lines*columns-1):";
+        do
+        {
+            cin>>mines;
+        }
+        while(mines>=lines*columns-1||mines<=2);
+        cout<<endl;
     }
-    while(lines<=0);
-    cout<<endl;
-    cout<<"Type the number of columns you want:  ";
-    do
+    else
     {
-        cin>>columns;
+        cout<<"Type the number of lines you want(minimum 3,maximum 100): ";
+        do
+        {
+            cin>>lines;
+        }
+        while(lines<=2||lines>=101);
+        cout<<endl;
+        cout<<"Type the number of columns you want(minimum 3,maximum 25):  ";
+        do
+        {
+            cin>>columns;
+        }
+        while(columns<=2||columns>=26);
+        cout<<endl;
+        cout<<"Type the number of mines you want;it must be   >2  and  <(lines*columns-1):";
+        do
+        {
+            cin>>mines;
+        }
+        while(mines>=lines*columns-1||mines<=2);
+        cout<<endl;
     }
-    while(columns<=0);
-    cout<<endl;
-    cout<<"Type the number of mines you want:";
-    do
-    {
-        cin>>mines;
-    }
-    while(mines>=lines*columns||mines<=0);
-    cout<<endl;
     initializeMinesweeperMap(m,lines,columns,mines);
     numberOfFlags=m.nrOfMines;
     placeMines(m);
     countAdjacentMines1(m);
-    reveal(m);
+    if(wayOfPlaying=='k')reveal(m);
     necessaryRevealedCells=lines*columns-mines;
     ok=true;
     numberOfRevealedCells=0;
-
+    firstMove=true;
 
 }
 
@@ -206,12 +255,18 @@ void playingUsingKeyboard(MinesweeperMap &m)
 
     char action;
     unsigned int line,column,nr;
-    cout<<"Type the line,the column and the action you want; o-open the cell at (line,column);f-mark the cell at (line,column)with a flag;a-special opening"<<endl;
+    cout<<" * on map means that the cell isn't opened and isn't marked with a flag"<<endl;
+    cout<<"F-the cell isn't opened ,but it is marked with a flag"<<endl;
+    cout<<"M-the cell is opened,and contains a mine ->Game Over"<<endl;
+    cout<<"Type the line,the column and the action you want"<<endl;
+    cout<<"o-open the cell at (line,column)"<<endl;
+    cout<<"f-mark the cell at (line,column)with a flag"<<endl;
+    cout<<"d-if the cell at (line,column) is already opened ,and the number of flags adjacent to it = number of the adjacent mines,all the cells around it,which are not marked with a flag, will be opened"<<endl;
     do
     {
         cin>>line>>column>>action;
     }
-    while(line<0||line>m.yDimension-1||column<0||column>m.xDimension||(action!='o'&&action!='f'&&action!='a'));
+    while(line<0||line>m.yDimension-1||column<0||column>m.xDimension||(action!='o'&&action!='f'&&action!='d'));
     if(action=='o')
     {
         open(m,line,column);
@@ -275,6 +330,7 @@ void playingUsingMouse(MinesweeperMap &m,SDL_Window* &w,SDL_Surface* &s)
 
     unsigned int line,column,nr;
     SDL_Event e;
+    SDL_Point mousePosition;
     while(SDL_PollEvent(&e)!=0)
     {
         if(e.type==SDL_QUIT)
@@ -329,9 +385,12 @@ void playingUsingMouse(MinesweeperMap &m,SDL_Window* &w,SDL_Surface* &s)
 
             }
             system("CLS");
+            cout<<"Flags available:"<<numberOfFlags<<endl;
+            cout<<" * on map means that the cell isn't opened and isn't marked with a flag"<<endl;
+            cout<<"F-the cell isn't opened ,but it is marked with a flag"<<endl;
+            cout<<"M-the cell is opened,and contains a mine ->Game Over"<<endl;
             cout<<"Left click to open a cell;if the cell is already opened ,and the number of flags adjacent to it = number of the adjacent mines,all the cells around it,which are not marked with a flag, will be opened"<<endl;
             cout<<"Right click to mark a cell with a flag(or to unmark it)"<<endl;
-            reveal(m);
             draw(m,w,s);
         }
 
@@ -375,12 +434,13 @@ void playAgainQuestion()
 
 int main(int argc, char* args[])
 {
-    unsigned int line,column;
+    unsigned int line,column,i,j;
     char player[50];
     MinesweeperMap gameMap;
     double seconds;
     Records r[100];
     unsigned int numberOfRecords=0;
+    clock_t t1,t2;
     SDL_Window *gameWindow;
     SDL_Surface *screen;
     initSurfaces();
@@ -405,7 +465,7 @@ mainMenu:
 
 
         case 'k':
-            initializeGame(gameMap);
+            initializeGame(gameMap,'k');
             system("CLS");
             reveal(gameMap);
             t1=clock();
@@ -441,23 +501,29 @@ mainMenu:
             while(ok==true&&(numberOfRevealedCells<necessaryRevealedCells||numberOfFlags!=0));
             break;
         case 'm':
-            initializeGame(gameMap);
-            clean(gameWindow,screen);
+            SDL_SetMainReady();
+            initializeGame(gameMap,'m');
             gameWindow=initWindow(gameMap.yDimension,gameMap.xDimension);
             screen=SDL_GetWindowSurface(gameWindow);
             SDL_SetWindowInputFocus(gameWindow);
+            system("CLS");
+            cout<<"Flags available: "<<numberOfFlags<<endl<<endl;
+            cout<<" * on map means that the cell isn't opened and isn't marked with a flag"<<endl;
+            cout<<"F-the cell isn't opened ,but it is marked with a flag"<<endl;
+            cout<<"M-the cell is opened,and contains a mine ->Game Over"<<endl;
             cout<<"Left click to open a cell;if the cell is already opened ,and the number of flags adjacent to it = number of the adjacent mines,all the cells around it,which are not marked with a flag, will be opened"<<endl;
             cout<<"Right click to mark a cell with a flag(or to unmark it)"<<endl;
+            SDL_Init(SDL_INIT_EVENTS);
             draw(gameMap,gameWindow,screen);
             t1=clock();
             do
             {
                 playingUsingMouse(gameMap,gameWindow,screen);
                 if(ok==false||(numberOfRevealedCells==necessaryRevealedCells&&numberOfFlags==0))
-                {   t2=clock();
+                {
+                    t2=clock();
                     seconds=(t2-t1)/(double)CLOCKS_PER_SEC;
-                    SDL_HideWindow(gameWindow);
-                    cout<<endl;
+                    clean(gameWindow,screen);
                     cout<<"Type your name"<<endl;
                     cin>>player;
                     cout<<endl;
@@ -481,11 +547,13 @@ mainMenu:
             }
             while(ok==true&&(numberOfRevealedCells<necessaryRevealedCells||numberOfFlags!=0));
             clean(gameWindow,screen);
+            SDL_Quit();
             break;
         }
     }
     while(keepPlaying==true);
     showRecords(r,numberOfRecords);
+    SDL_Quit();
     return 0;
 }
 

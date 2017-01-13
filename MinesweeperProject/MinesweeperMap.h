@@ -6,7 +6,7 @@ struct MinesweeperMapCell
 };
 struct MinesweeperMap
 {
-    MinesweeperMapCell grid [100][100];
+    MinesweeperMapCell grid [110][60];
     unsigned int xDimension,yDimension,nrOfMines;
 };
 void initializeMinesweeperMapCell(MinesweeperMapCell &a);

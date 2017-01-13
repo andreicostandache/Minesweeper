@@ -95,9 +95,13 @@ void placeMines(MinesweeperMap &m1)
 void countAdjacentMines1(MinesweeperMap &m1)
 {
     unsigned int i,j,x,y;
-    x=m1.xDimension-1;
+    if(m1.xDimension==3||m1.yDimension==3)
+        for(i=0;i<=m1.yDimension-1;i++)
+          for(j=0;j<=m1.xDimension-1;j++)
+            m1.grid[i][j].nrOfAdjacentMines=countAdjacentMines(m1,i,j);
+    else
+    {x=m1.xDimension-1;
     y=m1.yDimension-1;
-
     m1.grid[0][0].nrOfAdjacentMines=(m1.grid[1][0].containsMine+m1.grid[0][1].containsMine+m1.grid[1][1].containsMine);
     m1.grid[y][0].nrOfAdjacentMines=(m1.grid[y][1].containsMine+m1.grid[y-1][0].containsMine+m1.grid[y-1][1].containsMine);
     m1.grid[0][x].nrOfAdjacentMines=(m1.grid[0][x-1].containsMine+m1.grid[1][x].containsMine+m1.grid[1][x-1].containsMine);
@@ -117,5 +121,5 @@ void countAdjacentMines1(MinesweeperMap &m1)
         for(j=1; j<=x-1; j++)
             m1.grid[i][j].nrOfAdjacentMines=(m1.grid[i-1][j-1].containsMine+m1.grid[i-1][j].containsMine+m1.grid[i-1][j+1].containsMine+m1.grid[i][j-1].containsMine+m1.grid[i][j+1].containsMine+m1.grid[i+1][j-1].containsMine+m1.grid[i+1][j].containsMine+m1.grid[i+1][j+1].containsMine);
 }
-
+}
 
